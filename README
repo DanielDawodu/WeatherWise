@@ -1,0 +1,109 @@
+# Weather Dashboard
+
+## Overview
+
+A modern weather dashboard application that provides real-time weather information for any city worldwide. Built with React, Express, and TypeScript, this application features a clean Material Design-inspired interface with dynamic gradient backgrounds that change based on weather conditions. Users can search for cities and view detailed weather data including temperature, humidity, wind speed, and current conditions.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+
+**Technology Stack:**
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for fast development and optimized production builds
+- **Routing**: Wouter for lightweight client-side routing
+- **State Management**: TanStack React Query v5 for server state management
+- **UI Components**: shadcn/ui component library built on Radix UI primitives
+- **Styling**: Tailwind CSS with custom design system extending the "new-york" style preset
+
+**Design System:**
+- Material Design-inspired utility interface optimized for data clarity
+- Custom color system using HSL with CSS variables for theming
+- Consistent spacing scale (2, 4, 6, 8, 12, 16 Tailwind units)
+- Typography using Inter/Poppins font families
+- Glassmorphism effects with backdrop blur for weather cards
+- Dynamic gradient backgrounds that change based on weather conditions (clear sky = orange/pink, cloudy = gray, rainy = blue/indigo)
+
+**Key Components:**
+- `SearchBar`: Form-validated city search using react-hook-form and zod
+- `WeatherCard`: Displays weather data with dynamic icons from react-icons/wi
+- Weather icons mapped by condition (Clear, Clouds, Rain, Thunderstorm, Snow, Fog)
+
+**Form Validation:**
+- React Hook Form for form state management
+- Zod schemas for runtime type validation
+- Integration via @hookform/resolvers
+
+### Backend Architecture
+
+**Server Framework:**
+- Express.js with TypeScript
+- ESM module system (type: "module")
+- Custom Vite middleware integration for development
+
+**API Design:**
+- RESTful API proxy pattern to secure external API keys
+- Single weather endpoint: `GET /api/weather?city={cityName}`
+- Server-side API key management keeps credentials secure
+- Error handling with proper HTTP status codes passed through from external API
+
+**Development vs Production:**
+- Development: Vite dev server with HMR
+- Production: Static file serving from compiled dist/public
+- Custom logging middleware for API requests (truncates long responses to 80 chars)
+
+**Build Process:**
+- Frontend: Vite builds React app to dist/public
+- Backend: esbuild bundles server code to dist/index.js
+- Separate build steps ensuring proper asset compilation
+
+### Data Storage
+
+**Current Implementation:**
+- In-memory storage using Map data structure (MemStorage class)
+- User schema defined but not actively used by weather features
+- Storage abstraction through IStorage interface for future database migration
+
+**Database Configuration:**
+- Drizzle ORM configured for PostgreSQL via @neondatabase/serverless
+- Schema defined in shared/schema.ts with users table
+- Migration setup ready (drizzle.config.ts points to DATABASE_URL)
+- Not currently integrated into the weather functionality
+
+**Design Decision**: The application uses in-memory storage currently because weather data is fetched in real-time from external API. The database infrastructure is prepared for future features like user accounts, saved locations, or weather history.
+
+### External Dependencies
+
+**Weather Data Provider:**
+- OpenWeather API for real-time weather data
+- API key stored in environment variable: `OPENWEATHER_API_KEY`
+- Proxy pattern: client requests → Express server → OpenWeather API
+- Temperature returned in Kelvin, converted to Celsius client-side
+- Returns comprehensive weather objects with coord, weather conditions, main metrics, wind, clouds, and sys data
+
+**Component Libraries:**
+- Radix UI: Unstyled, accessible component primitives (22+ components)
+- Lucide React: Icon library for UI elements
+- react-icons: Weather-specific icons (wi package)
+- cmdk: Command menu component
+- vaul: Drawer component
+
+**Development Tools:**
+- Vite plugins for development experience (cartographer, dev-banner, runtime-error-modal)
+- TypeScript for type safety across client, server, and shared code
+- Path aliases configured: @/ for client/src, @shared/ for shared code
+
+**Database Service (Configured, Not Active):**
+- Neon serverless PostgreSQL
+- Connection via @neondatabase/serverless driver
+- Drizzle ORM for type-safe database operations
+- Session storage ready via connect-pg-simple
+
+**UI Utilities:**
+- class-variance-authority: Component variant management
+- tailwind-merge + clsx: Conditional className composition
+- date-fns: Date formatting utilities
